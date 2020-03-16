@@ -1,4 +1,4 @@
-# iotrest
+# iotrest with H2, JOOQ and JWT
 
 This project demonstrates the implementation of a jax-rs based RESTful web service using Jersey, Undertow and Weld. 
 The API endpoints are secured using a token-based authentication, where the client, after proving its identity(with username and password)
