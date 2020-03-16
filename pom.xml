@@ -6,7 +6,7 @@
 
     <groupId>com.project</groupId>
     <artifactId>iotrest-root</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
 
     <packaging>pom</packaging>
 
@@ -23,7 +23,6 @@
         <commons-validator.version>1.6</commons-validator.version>
         <commons-cli.version>1.4</commons-cli.version>
         <guava.version>28.2-jre</guava.version>
-
     </properties>
 
     <dependencyManagement>
@@ -86,21 +85,6 @@
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>
