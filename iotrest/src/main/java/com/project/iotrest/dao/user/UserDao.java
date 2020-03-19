@@ -9,13 +9,18 @@ import com.project.iotrest.pojos.User;
 import com.project.iotrest.pojos.UserAccessRights;
 import jooq_generated.tables.records.UsersAccessRightsRecord;
 import jooq_generated.tables.records.UsersRecord;
+import org.apache.commons.collections.MapUtils;
 import org.jooq.DSLContext;
 import org.jooq.InsertQuery;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import java.util.List;
+import java.util.Map;
+
 import static com.project.iotrest.exceptions.ErrorStatusCodes.SERVER_ERROR;
+import static jooq_generated.tables.Users.USERS;
 import static jooq_generated.tables.UsersAccessRights.USERS_ACCESS_RIGHTS;
 
 /**
@@ -60,13 +65,14 @@ public class UserDao {
      */
     public User getUserById(Integer id) {
         try (DSLContext ctx = new DSLContextFactory().getDSLContext()) {
-            UsersRecord usersRecord = queries.getUserById(ctx, id)
-                    .fetchOne();
-            User user = processUserRecord(id.toString(), usersRecord);
-            UsersAccessRightsRecord usersAccessRightsRecord = getUserAccessRightsRecord(ctx, id);
-            UserAccessRights userAccessRights = processUserAccessRights(id, usersAccessRightsRecord);
-            setUserAccessRights(user, userAccessRights);
-            return user;
+            Map<User, List<UserAccessRights>> result = queries.getUserById(ctx, id)
+                    .fetchGroups(
+                            // Map records first into the USERS table and then into the key POJO type
+                            r -> r.into(USERS).into(User.class),
+                            // Map records first into the USERS_ACCESS_RIGHTS table and then into the value POJO type
+                            r -> r.into(USERS_ACCESS_RIGHTS).into(UserAccessRights.class)
+                    );
+            return getUserAndAccessRights(new User(), result);
         }
     }
 
@@ -78,20 +84,34 @@ public class UserDao {
      */
     public User getUserByUserNameOrEmail(String queryParam) {
         try (DSLContext ctx = new DSLContextFactory().getDSLContext()) {
-            UsersRecord userRecord = queries.getUserByNameOrEmail(ctx, queryParam)
-                    .fetchOne();
-            User user = processUserRecord(queryParam, userRecord);
-            UsersAccessRightsRecord usersAccessRightsRecord = getUserAccessRightsRecord(ctx, user.getId());
-            UserAccessRights userAccessRights = processUserAccessRights(user.getId(), usersAccessRightsRecord);
-            setUserAccessRights(user, userAccessRights);
-            return user;
+            Map<User, List<UserAccessRights>> result = queries.getUserByNameOrEmail(ctx, queryParam)
+                    .fetchGroups(
+                            // Map records first into the USERS table and then into the key POJO type
+                            r -> r.into(USERS).into(User.class),
+                            // Map records first into the USERS_ACCESS_RIGHTS table and then into the value POJO type
+                            r -> r.into(USERS_ACCESS_RIGHTS).into(UserAccessRights.class)
+                    );
+            return getUserAndAccessRights(new User(), result);
         }
+    }
+
+    private User getUserAndAccessRights(User user, Map<User, List<UserAccessRights>> result) {
+        if (MapUtils.isNotEmpty(result)) {
+            for (Map.Entry<User, List<UserAccessRights>> entry : result.entrySet()) {
+                if (entry.getValue().size() <= 1) {
+                    user = entry.getKey();
+                    UserAccessRights userAccessRights = entry.getValue().get(0);
+                    user.setUserAccessRights(userAccessRights);
+                }
+            }
+        }
+        return user;
     }
 
     /**
      * Insert a new user.
      *
-     * @param ctx {@link DSLContext ctx}
+     * @param ctx  {@link DSLContext ctx}
      * @param user {@link User}
      * @return {@link User}
      */
@@ -109,7 +129,7 @@ public class UserDao {
     /**
      * Insert access rights for a user.
      *
-     * @param ctx {@link DSLContext}
+     * @param ctx              {@link DSLContext}
      * @param userAccessRights {@link UserAccessRights}
      * @return {@link UserAccessRights}
      */
@@ -156,7 +176,7 @@ public class UserDao {
      * Get access rights for the user with the provided id.
      *
      * @param ctx {@link DSLContext}
-     * @param id Integer
+     * @param id  Integer
      * @return {@link UserAccessRights}
      */
     private UsersAccessRightsRecord getUserAccessRightsRecord(DSLContext ctx, Integer id) {
@@ -186,7 +206,7 @@ public class UserDao {
     /**
      * Validates the given user access rights record and lodge it into UserAccessRights Pojo.
      *
-     * @param id Integer
+     * @param id                      Integer
      * @param usersAccessRightsRecord {@link UsersAccessRightsRecord}
      * @return {@link UserAccessRights}
      */

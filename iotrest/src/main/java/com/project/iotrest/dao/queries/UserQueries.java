@@ -29,8 +29,13 @@ public class UserQueries {
      * @param userId Integer
      * @return {@link SelectConditionStep<UsersRecord>}
      */
-    public SelectConditionStep<UsersRecord> getUserById(DSLContext ctx, Integer userId) {
-        return ctx.selectFrom(USERS)
+    public SelectConditionStep<Record> getUserById(DSLContext ctx, Integer userId) {
+        /*return ctx.selectFrom(USERS)
+                .where(USERS.ID.eq(userId));*/
+        return ctx.select(USERS.fields())
+                .select(USERS_ACCESS_RIGHTS.fields())
+                .from(USERS)
+                .join(USERS_ACCESS_RIGHTS).on(USERS.ID.eq(USERS_ACCESS_RIGHTS.USER_ID))
                 .where(USERS.ID.eq(userId));
     }
 
@@ -41,14 +46,19 @@ public class UserQueries {
      * @param queryParam String
      * @return {@link SelectConditionStep<UsersRecord>}
      */
-    public SelectConditionStep<UsersRecord> getUserByNameOrEmail(DSLContext ctx, String queryParam) {
+    public SelectConditionStep<Record> getUserByNameOrEmail(DSLContext ctx, String queryParam) {
         TableField<UsersRecord, String> tableField = null;
         if (BooleanUtils.isTrue(isUsername(queryParam))) {
             tableField = USERS.USERNAME;
         } else if (BooleanUtils.isTrue(isEmail(queryParam))) {
             tableField = USERS.EMAIL;
         }
-        return tableField != null ? ctx.selectFrom(USERS).where(tableField.eq(queryParam)) : null;
+        return tableField != null ? ctx.select(USERS.fields())
+                .select(USERS_ACCESS_RIGHTS.fields())
+                .from(USERS)
+                .join(USERS_ACCESS_RIGHTS).on(USERS.ID.eq(USERS_ACCESS_RIGHTS.USER_ID))
+                .where(tableField.eq(queryParam))
+                : null;
     }
 
     /**
