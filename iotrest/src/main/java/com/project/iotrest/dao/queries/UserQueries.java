@@ -7,6 +7,7 @@ import jooq_generated.tables.records.UsersRecord;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.jooq.*;
+import org.jooq.Record;
 
 import javax.enterprise.context.Dependent;
 

@@ -16,10 +16,8 @@ public class JerseyConfig extends ResourceConfig {
         register(UserDataLoader.class);
         packages(
                 "jersey.config.server.provider.packages",
-                "com.project.iotrest.config",
-                "com.project.iotrest.exceptions",
-                "com.project.iotrest.rest",
-                "com.project.iotrest.access"
+                "io.swagger.v3.jaxrs2.integration.resources",
+                "com.project.iotrest"
         );
     }
 }

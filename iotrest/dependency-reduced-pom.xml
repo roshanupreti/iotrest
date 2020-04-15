@@ -23,7 +23,7 @@
               <transformers>
                 <transformer />
                 <transformer>
-                  <mainClass>com.project.iotrest.server.Server</mainClass>
+                  <mainClass>com.project.iotrest.Application</mainClass>
                 </transformer>
               </transformers>
             </configuration>
@@ -31,8 +31,63 @@
         </executions>
       </plugin>
       <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.17</version>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${maven-dependency-plugin.version}</version>
+        <executions>
+          <execution>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.webjars</groupId>
+                  <artifactId>swagger-ui</artifactId>
+                  <version>${swagger-ui.version}</version>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>${project.build.directory}/swagger-ui</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>${maven-war-plugin.version}</version>
+        <configuration>
+          <webResources>
+            <resource>
+              <directory>${project.build.directory}/swagger-ui/META-INF/resources/webjars/swagger-ui/${swagger-ui.version}</directory>
+              <includes>
+                <include>**/*.*</include>
+              </includes>
+              <targetPath>swagger-ui</targetPath>
+            </resource>
+          </webResources>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.google.code.maven-replacer-plugin</groupId>
+        <artifactId>replacer</artifactId>
+        <version>${replacer.version}</version>
+        <executions>
+          <execution>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>replace</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <file>${project.build.directory}/swagger-ui/META-INF/resources/webjars/swagger-ui/${swagger-ui.version}/index.html</file>
+          <replacements>
+            <replacement>
+              <token>http://petstore.swagger.io/v2/swagger.json</token>
+              <value>/iotrest/openapi.json</value>
+            </replacement>
+          </replacements>
+        </configuration>
       </plugin>
     </plugins>
   </build>
@@ -40,12 +95,16 @@
     <jersey.version>2.30</jersey.version>
     <undertow.version>2.0.29.Final</undertow.version>
     <jbcrypt.version>0.4.1</jbcrypt.version>
+    <maven-war-plugin.version>3.2.2</maven-war-plugin.version>
+    <replacer.version>1.5.3</replacer.version>
     <jjwt.version>0.9.1</jjwt.version>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <el-api.version>3.0.0</el-api.version>
+    <swagger-ui.version>3.17.0</swagger-ui.version>
     <jackson.version>2.10.2</jackson.version>
     <weld.version>3.1.3.Final</weld.version>
+    <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
     <maven.compiler.source>1.8</maven.compiler.source>
   </properties>
 </project>
