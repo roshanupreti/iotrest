@@ -5,6 +5,10 @@ import com.project.iotrest.pojos.Access;
 import com.project.iotrest.pojos.User;
 import com.project.iotrest.service.user.UserService;
 import com.project.iotrest.validation.RequestParamValidator;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -19,16 +23,29 @@ import javax.ws.rs.core.Response;
  */
 
 @Path("users")
+@Api("users")
 @RequestScoped
 public class UserResource {
 
     @Inject
     private UserService userService;
 
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Bad Request."),
+            @ApiResponse(code = 401, message = "Unauthorized Access."),
+            @ApiResponse(code = 404, message = "Resource Not Found."),
+            @ApiResponse(code = 403, message = "Access Forbidden"),
+            @ApiResponse(code = 500, message = "Server Error.")
+    })
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Accessible(Access.CREATE)
+    @ApiOperation(
+            value = "Creates a new user.",
+            response = User.class
+    )
     public User createUser(User user) {
         RequestParamValidator.validatePost(user);
         return userService.createUser(user);
@@ -37,6 +54,10 @@ public class UserResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Accessible(Access.READ)
+    @ApiOperation(
+            value = "Gets a user by either username or e-mail.",
+            response = User.class
+    )
     public User getUser(@QueryParam("nameOrEmail") String nameOrEmail) {
         RequestParamValidator.validateString(nameOrEmail);
         return userService.getUserByUserNameOrEmail(nameOrEmail);
@@ -46,6 +67,10 @@ public class UserResource {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Accessible(Access.READ)
+    @ApiOperation(
+            value = "Gets a user by id.",
+            response = User.class
+    )
     public User getUserById(@PathParam("id") Integer id) {
         RequestParamValidator.validateId(id);
        return userService.getUserById(id);
@@ -55,6 +80,10 @@ public class UserResource {
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Accessible(Access.DELETE)
+    @ApiOperation(
+            value = "Deletes a user by id.",
+            response = Response.class
+    )
     public Response deleteUserById(@PathParam("id") Integer userId) {
         RequestParamValidator.validateId(userId);
         int deleteStatus = userService.deleteUser(userId);

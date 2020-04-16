@@ -43,7 +43,10 @@ public class Application {
         deploymentManager.deploy();
 
         final PathHandler pathHandler = Handlers.path(Handlers.redirect("/"))
-                .addPrefixPath("/", deploymentManager.start());
+                .addPrefixPath("/", deploymentManager.start())
+                .addPrefixPath("/iotrest/swagger",
+                        Handlers.resource(new ClassPathResourceManager(Application.class.getClassLoader(),
+                                "META-INF/swagger-ui")).addWelcomeFiles("index.html"));
 
         LOGGER.info("Starting server, listening on port {}", httpPort);
 
