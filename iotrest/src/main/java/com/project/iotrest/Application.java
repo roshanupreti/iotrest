@@ -1,28 +1,11 @@
 package com.project.iotrest;
 
-import com.project.iotrest.config.JerseyConfig;
-import io.undertow.Handlers;
-import io.undertow.Undertow;
-import io.undertow.server.handlers.PathHandler;
-import io.undertow.server.handlers.resource.ClassPathResourceManager;
-import io.undertow.servlet.Servlets;
-import io.undertow.servlet.api.DeploymentInfo;
-import io.undertow.servlet.api.DeploymentManager;
-import org.apache.commons.cli.*;
-import org.glassfish.jersey.servlet.ServletContainer;
-import org.jboss.weld.environment.servlet.Listener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletException;
-
-import static io.undertow.servlet.Servlets.*;
-import static org.glassfish.jersey.servlet.ServletProperties.JAXRS_APPLICATION_CLASS;
+//import io.undertow.server.handlers.PathHandler;
 
 /* Create and start the server at `localhost:8000/` */
 public class Application {
 
-    private static final String HTTP_PORT = "httpPort";
+    /*private static final String HTTP_PORT = "httpPort";
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
     private static final int DEFAULT_HTTP_PORT = 8000;
 
@@ -53,12 +36,12 @@ public class Application {
         serverInit(httpPort, pathHandler);
     }
 
-    /**
+    *//**
      * Start undertow server on the specified http port and path handler.
      *
      * @param httpPort int
      * @param pathHandler {@link PathHandler}
-     */
+     *//*
     private static void serverInit(int httpPort, PathHandler pathHandler) {
         final Undertow server = Undertow
                 .builder()
@@ -67,7 +50,7 @@ public class Application {
                 .build();
         server.start();
 
-        /* Stop server in case any RuntimeException occurs during initialization. */
+        *//* Stop server in case any RuntimeException occurs during initialization. *//*
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             LOGGER.info("Stopping server.");
             server.stop();
@@ -96,5 +79,5 @@ public class Application {
                 .numberOfArgs(1)
                 .desc("http port this server listens on")
                 .build());
-    }
+    }*/
 }

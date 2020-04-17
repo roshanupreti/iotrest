@@ -9,6 +9,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.EnumUtils;
 
 import javax.annotation.Priority;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -33,6 +34,7 @@ import static com.project.iotrest.exceptions.ErrorStatusCodes.UNAUTHORIZED;
 @Accessible
 @Provider
 @Priority(Priorities.AUTHENTICATION)
+@ApplicationScoped
 public class AuthenticationFilter implements ContainerRequestFilter {
 
     @Inject
