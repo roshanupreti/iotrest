@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <artifactId>iotrest-root</artifactId>
+    <groupId>com.project</groupId>
+    <version>1.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>iotrest</artifactId>
+  <version>1.0</version>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer />
+                <transformer>
+                  <mainClass>com.project.iotrest.application.JettyServer</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <properties>
+    <hikariCPVersion>3.4.2</hikariCPVersion>
+    <h2Version>1.4.200</h2Version>
+    <swaggerVersion>1.6.1</swaggerVersion>
+    <el-apiVersion>3.0.0</el-apiVersion>
+    <weldVersion>3.1.3.Final</weldVersion>
+    <jjwtVersion>0.9.1</jjwtVersion>
+    <jettyVersion>9.4.28.v20200408</jettyVersion>
+    <jacksonVersion>2.10.3</jacksonVersion>
+    <persistence-apiVersion>2.2</persistence-apiVersion>
+    <jerseyVersion>2.30</jerseyVersion>
+    <jbcryptVersion>0.4.1</jbcryptVersion>
+  </properties>
+</project>
+
