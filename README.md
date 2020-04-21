@@ -3,7 +3,7 @@
 This project demonstrates the implementation of a jax-rs based RESTful web service using Jersey, Undertow and Weld. 
 The API endpoints are secured using a token-based authentication, where the client, after proving its identity(with username and password)
 , is provided with an authentication token (JWT) that is valid for a certain period of time. The client can then proceed 
-to send API call requests to the server using the token in the request header, for authentication and authorization purposes.
+to send API call requests to the app using the token in the request header, for authentication and authorization purposes.
 
 ## Prerequisites
 
@@ -13,7 +13,7 @@ to send API call requests to the server using the token in the request header, f
  ## Modules
  
  The project has a parent module named `iotrest-root`, which contains two more child modules `iotrest` and `iotrest-jooq`.
- `iotrest` contains server implementation whereas `iotrest-jooq` contains settings related to `JOOQ` classes generation, to be
+ `iotrest` contains app implementation whereas `iotrest-jooq` contains settings related to `JOOQ` classes generation, to be
  used for database related operations.
  
  ## Build and run.
