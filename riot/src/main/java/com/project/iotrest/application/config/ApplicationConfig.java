@@ -26,12 +26,25 @@ public class ApplicationConfig {
         ServletHolder apiServletHolder = new ServletHolder(servletContainer);
         ServletContextHandler apiContext = new ServletContextHandler(ServletContextHandler.SESSIONS);
         apiContext.setContextPath(CONTEXTPATH);
-        apiContext.addServlet(apiServletHolder, "/iotrest/*");
+        apiContext.addServlet(apiServletHolder, "/riot/*");
         apiContext.addEventListener(new DecoratingListener(apiContext));
         apiContext.addEventListener(new Listener());
-
         return apiContext;
     }
+
+
+    public static ContextHandler buildRiotUI() throws URISyntaxException {
+        URL resource = JettyServer.class.getClassLoader().getResource("META-INF/riot-ui");
+        final ResourceHandler riotUIResourceHandler = new ResourceHandler();
+        if (resource != null) {
+            riotUIResourceHandler.setResourceBase(resource.toURI().toString());
+        }
+        final ContextHandler riotUIContext = new ContextHandler();
+        riotUIContext.setContextPath("/riot");
+        riotUIContext.setHandler(riotUIResourceHandler);
+        return riotUIContext;
+    }
+
 
     /* Start the Swagger UI at http://localhost:8000/iotrest/docs */
     public static ContextHandler buildSwaggerUI() throws URISyntaxException {
@@ -41,7 +54,7 @@ public class ApplicationConfig {
             swaggerUIResourceHandler.setResourceBase(resource.toURI().toString());
         }
         final ContextHandler swaggerUIContext = new ContextHandler();
-        swaggerUIContext.setContextPath("/iotrest/docs/");
+        swaggerUIContext.setContextPath("/riot/docs/");
         swaggerUIContext.setHandler(swaggerUIResourceHandler);
         return swaggerUIContext;
     }
