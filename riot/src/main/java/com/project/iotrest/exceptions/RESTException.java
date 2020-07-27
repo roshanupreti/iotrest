@@ -37,11 +37,12 @@ public class RESTException extends RuntimeException implements ExceptionMapper<R
         this.responseMessage = responseMessage;
     }
 
+    /*  transient -> not to be serialized when persisted to streams of bytes */
     @Context
-    private UriInfo uriInfo;
+    private transient UriInfo uriInfo;
 
     @Context
-    private HttpServletRequest request;
+    private transient HttpServletRequest request;
 
     public Integer getStatusCode() {
         return this.statusCode;

@@ -6,11 +6,11 @@
 
     <parent>
         <groupId>com.project</groupId>
-        <artifactId>iotrest-root</artifactId>
+        <artifactId>riot-root</artifactId>
         <version>1.0</version>
     </parent>
 
-    <artifactId>iotrest-jooq</artifactId>
+    <artifactId>riot-jooq</artifactId>
     <version>1.0</version>
 
     <dependencies>
@@ -51,7 +51,7 @@
                             <properties>
                                 <property>
                                     <key>scripts</key>
-                                    <value>conf/database.sql</value>
+                                    <value>conf/database/database.sql</value>
                                 </property>
                                 <property>
                                     <key>sort</key>

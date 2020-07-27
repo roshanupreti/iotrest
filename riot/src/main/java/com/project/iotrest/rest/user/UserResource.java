@@ -57,7 +57,7 @@ public class UserResource {
         }
     }
 
-    @GET
+    /*@GET
     @Produces(MediaType.APPLICATION_JSON)
     @Accessible(Access.READ)
     @ApiOperation(
@@ -71,7 +71,7 @@ public class UserResource {
         } catch (ApplicationException e) {
             throw new RESTException(e.getStatusCode(), e.getResponseMessage());
         }
-    }
+    }*/
 
     @GET
     @Path("{id}")

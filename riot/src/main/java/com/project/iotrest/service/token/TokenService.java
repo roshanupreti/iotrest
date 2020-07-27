@@ -1,5 +1,7 @@
 package com.project.iotrest.service.token;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.iotrest.pojos.Access;
 import com.project.iotrest.pojos.AuthenticationTokenParams;
 import com.project.iotrest.pojos.User;
@@ -9,6 +11,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import java.time.ZonedDateTime;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +25,8 @@ public class TokenService {
 
     private final Long EXPIRY_SECONDS = 900L;
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     @Inject
     private JWTProvider jwtProvider;
 
@@ -31,7 +36,7 @@ public class TokenService {
      * @param user {@link User}
      * @return String
      */
-    public String generateToken(User user) {
+    public JsonNode generateToken(User user) {
         ZonedDateTime iat = ZonedDateTime.now();
         ZonedDateTime exp = iat.plusSeconds(EXPIRY_SECONDS);
         AuthenticationTokenParams authenticationTokenParams = new AuthenticationTokenParams.Builder()
@@ -42,7 +47,7 @@ public class TokenService {
                 .withIssuedDate(iat)
                 .withExpirationDate(exp)
                 .build();
-        return jwtProvider.issueJWT(authenticationTokenParams);
+        return mapper.valueToTree(Collections.singletonMap("access_token", jwtProvider.issueJWT(authenticationTokenParams)));
     }
 
     /**

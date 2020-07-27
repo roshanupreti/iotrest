@@ -4,10 +4,8 @@ import com.project.iotrest.pojos.User;
 import com.project.iotrest.pojos.UserAccessRights;
 import jooq_generated.tables.records.UsersAccessRightsRecord;
 import jooq_generated.tables.records.UsersRecord;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.jooq.*;
-import org.jooq.Record;
 
 import javax.enterprise.context.Dependent;
 
@@ -31,8 +29,6 @@ public class UserQueries {
      * @return {@link SelectConditionStep<UsersRecord>}
      */
     public SelectConditionStep<Record> getUserById(DSLContext ctx, Integer userId) {
-        /*return ctx.selectFrom(USERS)
-                .where(USERS.ID.eq(userId));*/
         return ctx.select(USERS.fields())
                 .select(USERS_ACCESS_RIGHTS.fields())
                 .from(USERS)
@@ -48,18 +44,12 @@ public class UserQueries {
      * @return {@link SelectConditionStep<UsersRecord>}
      */
     public SelectConditionStep<Record> getUserByNameOrEmail(DSLContext ctx, String queryParam) {
-        TableField<UsersRecord, String> tableField = null;
-        if (BooleanUtils.isTrue(isUsername(queryParam))) {
-            tableField = USERS.USERNAME;
-        } else if (BooleanUtils.isTrue(isEmail(queryParam))) {
-            tableField = USERS.EMAIL;
-        }
-        return tableField != null ? ctx.select(USERS.fields())
+        return ctx.select(USERS.fields())
                 .select(USERS_ACCESS_RIGHTS.fields())
                 .from(USERS)
                 .join(USERS_ACCESS_RIGHTS).on(USERS.ID.eq(USERS_ACCESS_RIGHTS.USER_ID))
-                .where(tableField.eq(queryParam))
-                : null;
+                .where(USERS.USERNAME.eq(queryParam))
+                .or(USERS.EMAIL.eq(queryParam));
     }
 
     /**

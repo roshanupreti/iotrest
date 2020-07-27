@@ -78,7 +78,9 @@ public class DataSourceFactory {
     private static HikariDataSource createDataSource(String logicalDb) {
         HikariConfig config = new HikariConfig();
         config.setDriverClassName("org.h2.Driver");
-        config.setJdbcUrl(configMap(logicalDb).get("uri") + ";INIT=CREATE SCHEMA IF NOT EXISTS IOTREST;DB_CLOSE_DELAY=-1");
+        config.setJdbcUrl(configMap(logicalDb).get("uri") +
+                ";INIT=CREATE SCHEMA IF NOT EXISTS IOTREST;" +
+                "DB_CLOSE_DELAY=-1");
         config.setUsername(configMap(logicalDb).get("uname"));
         config.setPassword(configMap(logicalDb).get("pwd"));
         return new HikariDataSource(config);

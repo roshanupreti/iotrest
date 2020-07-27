@@ -3,9 +3,11 @@ package com.project.iotrest.service.user;
 
 import com.project.iotrest.dao.user.UserDao;
 import com.project.iotrest.exceptions.ApplicationException;
+import com.project.iotrest.pojos.LoginCredentials;
 import com.project.iotrest.pojos.User;
 import com.project.iotrest.rest.user.UserResource;
 import com.project.iotrest.validation.CredentialsValidator;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -38,8 +40,12 @@ public class UserService {
         return userDao.getUserById(id);
     }
 
-    public User getUserByUserNameOrEmail(String queryParam) throws ApplicationException {
-        return userDao.getUserByUserNameOrEmail(queryParam);
+    public User attemptUserLogin(LoginCredentials loginCredentials) throws ApplicationException {
+        User user = userDao.getUserByUserNameOrEmail(loginCredentials.getIdentifier());
+        if (BCrypt.checkpw(loginCredentials.getPassword(), user.getPassword())) {
+            return user;
+        }
+        throw new ApplicationException(BAD_REQUEST.getCode(), "Incorrect Password.");
     }
 
     public Boolean userExists(String queryParam) {

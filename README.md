@@ -36,13 +36,7 @@ H2 console available at `http://localhost:8082`
 
 ## REST APIs
 
-| method  | path | required body / param | required access rights | resource |
-| ------------- | ------------- | ------------- | ------------- | ------------- |
-| POST  | localhost:8000/iotrest/auth/login  | user identifier, password | N/A   | authentication   |
-| POST  | localhost:8000/iotrest/users  | user  | CREATE  | user   |
-| GET  | localhost:8000/iotrest/users  | user name or email as query param  | READ  | user   |
-| GET  | localhost:8000/iotrest/users/{id}  | user id as path param  | READ  | user   |
-| DELETE  | localhost:8000/iotrest/users/{id}  | user id as path param  | DELETE  | user   |
+All the endpoints are annotated with Swagger annotations, and a documentation can be found at `http://localhost:8000/iotrest/docs`
 
 ## Acknowledgments
 

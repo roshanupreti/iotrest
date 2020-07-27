@@ -2,6 +2,7 @@ package com.project.iotrest.rest.auth;
 
 import com.project.iotrest.exceptions.ApplicationException;
 import com.project.iotrest.exceptions.RESTException;
+import com.project.iotrest.particle.ParticleClient;
 import com.project.iotrest.pojos.LoginCredentials;
 import com.project.iotrest.pojos.User;
 import com.project.iotrest.service.token.TokenService;
@@ -14,7 +15,6 @@ import io.swagger.annotations.ApiResponses;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -37,6 +37,9 @@ public class AuthenticationResource {
     @Inject
     private TokenService tokenService;
 
+    @Inject
+    private ParticleClient particleClient;
+
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Bad Request."),
             @ApiResponse(code = 401, message = "Unauthorized Access."),
@@ -48,7 +51,6 @@ public class AuthenticationResource {
 
     @POST
     @Path("login")
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(
             value = "Authenticates a user against the provided credentials",
@@ -57,12 +59,23 @@ public class AuthenticationResource {
     public Response authenticate(LoginCredentials loginCredentials) {
         try {
             CredentialsValidator.validateLoginCredentials(loginCredentials);
-            User user = userService.getUserByUserNameOrEmail(loginCredentials.getIdentifier());
+            User user = userService.attemptUserLogin(loginCredentials);
             return Response.ok(tokenService.generateToken(user)).build();
         } catch (ApplicationException e) {
             throw new RESTException(e.getStatusCode(), e.getResponseMessage());
         }
     }
+
+    /*@GET
+    @Path("tokentest")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getToken() {
+        try {
+            return Response.ok(ParticleClient.getToken()).build();
+        } catch (ApplicationException e) {
+            throw new RESTException(e.getStatusCode(), e.getResponseMessage());
+        }
+    }*/
 
     //todo: implement an endpoint that revokes the JWT.
 }

@@ -6,11 +6,11 @@
 
     <parent>
         <groupId>com.project</groupId>
-        <artifactId>iotrest-root</artifactId>
+        <artifactId>riot-root</artifactId>
         <version>1.0</version>
     </parent>
 
-    <artifactId>iotrest</artifactId>
+    <artifactId>riot</artifactId>
     <version>1.0</version>
 
     <properties>
@@ -24,8 +24,10 @@
         <jbcryptVersion>0.4.1</jbcryptVersion>
         <persistence-apiVersion>2.2</persistence-apiVersion>
         <h2Version>1.4.200</h2Version>
+        <hk2-apiVersion>2.6.1</hk2-apiVersion>
         <hikariCPVersion>3.4.2</hikariCPVersion>
         <swaggerVersion>1.6.1</swaggerVersion>
+        <okHttpVersion>4.5.0</okHttpVersion>
 
     </properties>
 
@@ -174,7 +176,7 @@
         <dependency>
             <groupId>org.glassfish.hk2</groupId>
             <artifactId>hk2-api</artifactId>
-            <version>2.6.1</version>
+            <version>${hk2-apiVersion}</version>
         </dependency>
         <!-- End hk2-api -->
 
@@ -202,6 +204,15 @@
             <version>${swaggerVersion}</version>
         </dependency>
         <!-- End Swagger -->
+
+        <!-- Start okhttp -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${okHttpVersion}</version>
+        </dependency>
+        <!-- End okhttp -->
+
 
         <!-- Start internal jooq module -->
         <dependency>

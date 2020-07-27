@@ -1,6 +1,5 @@
 package com.project.iotrest.config;
 
-import com.project.iotrest.loader.UserDataLoader;
 import io.swagger.jaxrs.config.BeanConfig;
 import org.glassfish.jersey.server.ResourceConfig;
 
@@ -14,7 +13,7 @@ import javax.ws.rs.ApplicationPath;
 @ApplicationPath("/")
 public class JerseyAppConfig extends ResourceConfig {
     public JerseyAppConfig() {
-        register(UserDataLoader.class);
+        //register(UserDataLoader.class);
         packages(
                 "jersey.config.server.provider.packages",
                 "io.swagger.jaxrs.listing",

@@ -71,7 +71,11 @@ public class UserDao {
                             // Map records first into the USERS_ACCESS_RIGHTS table and then into the value POJO type
                             r -> r.into(USERS_ACCESS_RIGHTS).into(UserAccessRights.class)
                     );
-            return getUserAndAccessRights(new User(), result);
+            User user = getUserAndAccessRights(new User(), result);
+            if (user.getId() == null) {
+                throw new ApplicationException(ErrorStatusCodes.NOT_FOUND.getCode(), "User not found with id " + id);
+            }
+            return user;
         }
     }
 
@@ -90,11 +94,16 @@ public class UserDao {
                             // Map records first into the USERS_ACCESS_RIGHTS table and then into the value POJO type
                             r -> r.into(USERS_ACCESS_RIGHTS).into(UserAccessRights.class)
                     );
-            return getUserAndAccessRights(new User(), result);
+            User user = getUserAndAccessRights(new User(), result);
+            if (user.getId() == null) {
+                throw new ApplicationException(ErrorStatusCodes.NOT_FOUND.getCode(), "User not found with username and/or " +
+                        "email " + queryParam);
+            }
+            return user;
         }
     }
 
-    private User getUserAndAccessRights(User user, Map<User, List<UserAccessRights>> result) throws ApplicationException {
+    private User getUserAndAccessRights(User user, Map<User, List<UserAccessRights>> result) {
         if (MapUtils.isNotEmpty(result)) {
             for (Map.Entry<User, List<UserAccessRights>> entry : result.entrySet()) {
                 if (entry.getValue().size() <= 1) {
@@ -103,10 +112,6 @@ public class UserDao {
                     user.setUserAccessRights(userAccessRights);
                 }
             }
-        }
-        if (user == null
-                || user.getId() == null) {
-            throw new ApplicationException(ErrorStatusCodes.NOT_FOUND.getCode(), "User not found.");
         }
         return user;
     }

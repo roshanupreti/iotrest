@@ -1,13 +1,13 @@
 package com.project.iotrest.application;
 
+import com.project.iotrest.application.loader.InMemoryDBLoader;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.util.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.project.iotrest.application.config.ApplicationConfig.buildAPIContext;
-import static com.project.iotrest.application.config.ApplicationConfig.buildSwaggerUI;
+import static com.project.iotrest.application.config.ApplicationConfig.*;
 
 public class JettyServer {
 
@@ -26,8 +26,12 @@ public class JettyServer {
             // Add handler for static swagger-UI.
             handlers.addHandler(buildSwaggerUI());
 
+            handlers.addHandler(buildRiotUI());
+
             // Add handler for APIs and Swagger.
             handlers.addHandler(buildAPIContext());
+
+            InMemoryDBLoader.initialize();
 
             // Start server
             Server server = new Server(PORT);

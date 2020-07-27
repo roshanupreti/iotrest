@@ -1,14 +1,9 @@
 package com.project.iotrest.pojos;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.apache.commons.lang3.BooleanUtils;
-
 import javax.persistence.Column;
 import javax.persistence.Table;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 
 /**
@@ -35,7 +30,7 @@ public class User {
     private String email;
 
     @Column(name = "PASSWORD")
-    @JsonIgnore
+    //@JsonIgnore
     private String password;
 
     @Column(name = "IS_ACTIVE")

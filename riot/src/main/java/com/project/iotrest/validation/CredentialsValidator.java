@@ -3,7 +3,6 @@ package com.project.iotrest.validation;
 import com.project.iotrest.exceptions.ErrorStatusCodes;
 import com.project.iotrest.exceptions.RESTException;
 import com.project.iotrest.pojos.LoginCredentials;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -43,19 +42,5 @@ public class CredentialsValidator {
     public static String hashPassword(String plainTextPasswordString) {
         String salt = BCrypt.gensalt();
         return BCrypt.hashpw(plainTextPasswordString, salt);
-    }
-
-    public static Boolean checkPassword(String plainTextPassword, String hashedPassword) {
-        if (StringUtils.isEmpty(hashedPassword)
-                || !StringUtils.startsWith(hashedPassword, "$2a$")) {
-            throw new RuntimeException("Invalid hash");
-        }
-        return BCrypt.checkpw(plainTextPassword, hashedPassword);
-    }
-
-    private static void validatePassword(String hashedPass, String plainTextPass) throws Exception {
-        if (BooleanUtils.isFalse(checkPassword(plainTextPass, hashedPass))) {
-            throw new Exception("Incorrect password.");
-        }
     }
 }
