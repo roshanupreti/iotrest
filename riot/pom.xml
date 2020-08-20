@@ -217,7 +217,7 @@
         <!-- Start internal jooq module -->
         <dependency>
             <groupId>com.project</groupId>
-            <artifactId>iotrest-jooq</artifactId>
+            <artifactId>riot-jooq</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>

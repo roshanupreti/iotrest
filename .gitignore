@@ -2,4 +2,6 @@
 target/
 *.iml
 dependency-reduced-pom.xml
+conf/particle/particle.properties
+conf/database/database.sql
 
