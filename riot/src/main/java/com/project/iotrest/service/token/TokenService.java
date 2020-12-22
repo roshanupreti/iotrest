@@ -2,10 +2,10 @@ package com.project.iotrest.service.token;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.iotrest.pojos.Access;
-import com.project.iotrest.pojos.AuthenticationTokenParams;
-import com.project.iotrest.pojos.User;
-import com.project.iotrest.pojos.UserAccessRights;
+import com.project.iotrest.pojos.access.Access;
+import com.project.iotrest.pojos.access.AuthenticationTokenParams;
+import com.project.iotrest.pojos.user.User;
+import com.project.iotrest.pojos.user.UserAccessRights;
 import org.apache.commons.lang3.BooleanUtils;
 
 import javax.enterprise.context.Dependent;
@@ -23,9 +23,7 @@ import java.util.Set;
 @Dependent
 public class TokenService {
 
-    private final Long EXPIRY_SECONDS = 900L;
-
-    private final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     @Inject
     private JWTProvider jwtProvider;
@@ -33,11 +31,13 @@ public class TokenService {
     /**
      * Generate JWT for the given user.
      *
-     * @param user {@link User}
+     * @param user          {@link User}
+     * @param particleToken
      * @return String
      */
-    public JsonNode generateToken(User user) {
+    public JsonNode generateToken(User user, final JsonNode particleToken) {
         ZonedDateTime iat = ZonedDateTime.now();
+        Long EXPIRY_SECONDS = 900L;
         ZonedDateTime exp = iat.plusSeconds(EXPIRY_SECONDS);
         AuthenticationTokenParams authenticationTokenParams = new AuthenticationTokenParams.Builder()
                 .withId(user.getId().toString())
@@ -47,7 +47,8 @@ public class TokenService {
                 .withIssuedDate(iat)
                 .withExpirationDate(exp)
                 .build();
-        return mapper.valueToTree(Collections.singletonMap("access_token", jwtProvider.issueJWT(authenticationTokenParams)));
+        return mapper.valueToTree(Collections.singletonMap("access_token",
+                jwtProvider.issueJWT(authenticationTokenParams, particleToken.get("access_token").asText())));
     }
 
     /**

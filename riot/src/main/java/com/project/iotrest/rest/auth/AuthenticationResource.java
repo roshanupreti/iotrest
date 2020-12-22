@@ -2,9 +2,9 @@ package com.project.iotrest.rest.auth;
 
 import com.project.iotrest.exceptions.ApplicationException;
 import com.project.iotrest.exceptions.RESTException;
-import com.project.iotrest.particle.ParticleClient;
-import com.project.iotrest.pojos.LoginCredentials;
-import com.project.iotrest.pojos.User;
+import com.project.iotrest.pojos.access.LoginCredentials;
+import com.project.iotrest.pojos.user.User;
+import com.project.iotrest.service.token.ParticleLoginService;
 import com.project.iotrest.service.token.TokenService;
 import com.project.iotrest.service.user.UserService;
 import com.project.iotrest.validation.CredentialsValidator;
@@ -38,7 +38,7 @@ public class AuthenticationResource {
     private TokenService tokenService;
 
     @Inject
-    private ParticleClient particleClient;
+    private ParticleLoginService particleLoginService;
 
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Bad Request."),
@@ -60,7 +60,8 @@ public class AuthenticationResource {
         try {
             CredentialsValidator.validateLoginCredentials(loginCredentials);
             User user = userService.attemptUserLogin(loginCredentials);
-            return Response.ok(tokenService.generateToken(user)).build();
+            return Response.ok(tokenService.generateToken(user, particleLoginService.getParticleToken()))
+                    .build();
         } catch (ApplicationException e) {
             throw new RESTException(e.getStatusCode(), e.getResponseMessage());
         }

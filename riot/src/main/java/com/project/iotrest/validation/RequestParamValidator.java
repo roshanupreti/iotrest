@@ -1,10 +1,8 @@
 package com.project.iotrest.validation;
 
 import com.project.iotrest.exceptions.RESTException;
-import com.project.iotrest.pojos.User;
+import com.project.iotrest.pojos.user.User;
 import org.apache.commons.lang3.StringUtils;
-
-import static com.project.iotrest.exceptions.ErrorStatusCodes.BAD_REQUEST;
 
 /**
  * Request parameters validator class.

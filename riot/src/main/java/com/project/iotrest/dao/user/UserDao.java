@@ -5,8 +5,8 @@ import com.project.iotrest.dao.queries.UserQueries;
 import com.project.iotrest.dbutil.DSLContextFactory;
 import com.project.iotrest.exceptions.ApplicationException;
 import com.project.iotrest.exceptions.ErrorStatusCodes;
-import com.project.iotrest.pojos.User;
-import com.project.iotrest.pojos.UserAccessRights;
+import com.project.iotrest.pojos.user.User;
+import com.project.iotrest.pojos.user.UserAccessRights;
 import jooq_generated.tables.records.UsersAccessRightsRecord;
 import jooq_generated.tables.records.UsersRecord;
 import org.apache.commons.collections.MapUtils;
@@ -96,7 +96,8 @@ public class UserDao {
                     );
             User user = getUserAndAccessRights(new User(), result);
             if (user.getId() == null) {
-                throw new ApplicationException(ErrorStatusCodes.NOT_FOUND.getCode(), "User not found with username and/or " +
+                throw new ApplicationException(ErrorStatusCodes.NOT_FOUND.getCode(),
+                        "User not found with username and/or " +
                         "email " + queryParam);
             }
             return user;

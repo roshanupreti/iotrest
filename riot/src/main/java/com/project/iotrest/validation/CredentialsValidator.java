@@ -2,7 +2,7 @@ package com.project.iotrest.validation;
 
 import com.project.iotrest.exceptions.ErrorStatusCodes;
 import com.project.iotrest.exceptions.RESTException;
-import com.project.iotrest.pojos.LoginCredentials;
+import com.project.iotrest.pojos.access.LoginCredentials;
 import org.apache.commons.lang3.StringUtils;
 import org.mindrot.jbcrypt.BCrypt;
 

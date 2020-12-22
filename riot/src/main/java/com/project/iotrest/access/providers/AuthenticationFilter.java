@@ -1,12 +1,10 @@
-package com.project.iotrest.access.filter;
+package com.project.iotrest.access.providers;
 
 import com.project.iotrest.access.annotation.Accessible;
 import com.project.iotrest.exceptions.RESTException;
-import com.project.iotrest.pojos.Access;
+import com.project.iotrest.pojos.access.Access;
 import com.project.iotrest.service.token.JWTProvider;
 import io.jsonwebtoken.Claims;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.EnumUtils;
 
 import javax.annotation.Priority;
 import javax.inject.Inject;
@@ -18,9 +16,9 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.project.iotrest.exceptions.ErrorStatusCodes.UNAUTHORIZED;
 
@@ -51,8 +49,13 @@ public class AuthenticationFilter implements ContainerRequestFilter {
             throw new RESTException(UNAUTHORIZED.getCode(), "Invalid token");
         }
         Object accessRights = claims.getOrDefault("access-levels", ArrayList.class);
-        List<String> accessList = (List<String>) accessRights;
+        final String particleToken = String.valueOf(claims.getOrDefault("particle-token", String.class));
+        List<String> accessList = null;
+        if (accessRights instanceof List) {
+            accessList = (List<String>) accessRights;
+        }
         modifyRequestContext(requestContext, claims.getSubject(), getAccessRightsSet(accessList));
+        requestContext.setProperty("particle-access-token", particleToken);
     }
 
     /**
@@ -62,7 +65,9 @@ public class AuthenticationFilter implements ContainerRequestFilter {
      * @param user           String
      * @param accessRights   String
      */
-    private void modifyRequestContext(ContainerRequestContext requestContext, final String user, Set<Access> accessRights) {
+    private void modifyRequestContext(ContainerRequestContext requestContext,
+                                      final String user,
+                                      Set<Access> accessRights) {
         final SecurityContext currentSecurityContext = requestContext.getSecurityContext();
         requestContext.setSecurityContext(new SecurityContext() {
 
@@ -95,15 +100,8 @@ public class AuthenticationFilter implements ContainerRequestFilter {
      * @return Set
      */
     private Set<Access> getAccessRightsSet(List<String> accessList) {
-        Set<Access> accessSet = new HashSet<>();
-        if (!CollectionUtils.isEmpty(accessList)) {
-            accessList.forEach(
-                    access -> {
-                        if (EnumUtils.isValidEnum(Access.class, access)) {
-                            accessSet.add(Access.valueOf(access));
-                        }
-                    });
-        }
-        return accessSet;
+        return accessList.stream()
+                .map(Access::fromString)
+                .collect(Collectors.toSet());
     }
 }

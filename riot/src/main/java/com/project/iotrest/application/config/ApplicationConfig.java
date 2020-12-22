@@ -46,7 +46,7 @@ public class ApplicationConfig {
     }
 
 
-    /* Start the Swagger UI at http://localhost:8000/iotrest/docs */
+    /* Start the Swagger UI at http://localhost:8000/riot/docs */
     public static ContextHandler buildSwaggerUI() throws URISyntaxException {
         URL resource = JettyServer.class.getClassLoader().getResource("META-INF/swagger-ui");
         final ResourceHandler swaggerUIResourceHandler = new ResourceHandler();

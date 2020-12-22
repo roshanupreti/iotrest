@@ -1,4 +1,4 @@
-package com.project.iotrest.pojos;
+package com.project.iotrest.pojos.access;
 
 import java.time.ZonedDateTime;
 import java.util.Collections;

@@ -1,4 +1,4 @@
-package com.project.iotrest.pojos;
+package com.project.iotrest.pojos.access;
 
 /**
  * Class to represent user identifier and password.

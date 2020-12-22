@@ -1,4 +1,4 @@
-package com.project.iotrest.pojos;
+package com.project.iotrest.pojos.user;
 
 
 import javax.persistence.Column;

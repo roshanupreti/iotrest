@@ -3,8 +3,8 @@ package com.project.iotrest.service.user;
 
 import com.project.iotrest.dao.user.UserDao;
 import com.project.iotrest.exceptions.ApplicationException;
-import com.project.iotrest.pojos.LoginCredentials;
-import com.project.iotrest.pojos.User;
+import com.project.iotrest.pojos.access.LoginCredentials;
+import com.project.iotrest.pojos.user.User;
 import com.project.iotrest.rest.user.UserResource;
 import com.project.iotrest.validation.CredentialsValidator;
 import org.mindrot.jbcrypt.BCrypt;

@@ -1,6 +1,6 @@
 package com.project.iotrest.access.annotation;
 
-import com.project.iotrest.pojos.Access;
+import com.project.iotrest.pojos.access.Access;
 
 import javax.ws.rs.NameBinding;
 import java.lang.annotation.ElementType;

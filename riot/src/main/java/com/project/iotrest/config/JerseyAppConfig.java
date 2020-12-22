@@ -32,7 +32,7 @@ public class JerseyAppConfig extends ResourceConfig {
         beanConfig.setSchemes(new String[]{"http"});
         beanConfig.setHost("localhost:8000");
         beanConfig.setScan(true);
-        beanConfig.setBasePath("/iotrest");
+        beanConfig.setBasePath("/riot/docs");
         beanConfig.setResourcePackage("com.project.iotrest.rest");
     }
 }

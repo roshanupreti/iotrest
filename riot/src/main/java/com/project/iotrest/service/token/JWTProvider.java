@@ -1,7 +1,7 @@
 package com.project.iotrest.service.token;
 
 import com.project.iotrest.exceptions.RESTException;
-import com.project.iotrest.pojos.AuthenticationTokenParams;
+import com.project.iotrest.pojos.access.AuthenticationTokenParams;
 import io.jsonwebtoken.*;
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,7 +19,7 @@ import static java.util.Date.from;
 public class JWTProvider {
 
     /* secret key to sign the JWT with. */
-    private final String secret = "$2a$10$32Hw5zY7uvx0EgsfE/yQNuuL.Nrt5srepNP.vlmES2VKbYAnOBqC6";
+    private static final String SECRET = "$2a$10$32Hw5zY7uvx0EgsfE/yQNuuL.Nrt5srepNP.vlmES2VKbYAnOBqC6";
 
     /**
      * Issue and return a JWT string.
@@ -27,7 +27,7 @@ public class JWTProvider {
      * @param authenticationTokenParams {@link AuthenticationTokenParams}
      * @return String
      */
-    public String issueJWT(AuthenticationTokenParams authenticationTokenParams) {
+    public String issueJWT(AuthenticationTokenParams authenticationTokenParams, final String particleToken) {
         return Jwts.builder()
                 .setId(authenticationTokenParams.getId())
                 .setIssuer("iotrest")
@@ -36,7 +36,8 @@ public class JWTProvider {
                 .setExpiration(from(authenticationTokenParams.getExpirationDate().toInstant()))
                 .claim("email", authenticationTokenParams.getEmail())
                 .claim("access-levels", authenticationTokenParams.getAccessRights())
-                .signWith(SignatureAlgorithm.HS256, secret)
+                .claim("particle-token", particleToken)
+                .signWith(SignatureAlgorithm.HS256, SECRET)
                 .compact();
     }
 
@@ -52,7 +53,7 @@ public class JWTProvider {
         }
         try {
             return Jwts.parser()
-                    .setSigningKey(secret)
+                    .setSigningKey(SECRET)
                     .parseClaimsJws(token)
                     .getBody();
         } catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException | SignatureException e) {

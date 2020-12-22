@@ -1,7 +1,7 @@
 package com.project.iotrest.dao.queries;
 
-import com.project.iotrest.pojos.User;
-import com.project.iotrest.pojos.UserAccessRights;
+import com.project.iotrest.pojos.user.User;
+import com.project.iotrest.pojos.user.UserAccessRights;
 import jooq_generated.tables.records.UsersAccessRightsRecord;
 import jooq_generated.tables.records.UsersRecord;
 import org.apache.commons.validator.routines.EmailValidator;

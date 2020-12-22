@@ -1,10 +1,10 @@
-package com.project.iotrest.access.filter;
+package com.project.iotrest.access.providers;
 
 
 import com.project.iotrest.access.annotation.Accessible;
 import com.project.iotrest.exceptions.ErrorStatusCodes;
 import com.project.iotrest.exceptions.RESTException;
-import com.project.iotrest.pojos.Access;
+import com.project.iotrest.pojos.access.Access;
 
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
