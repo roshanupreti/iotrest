@@ -1,6 +1,6 @@
 package com.project.iotrest.access.providers;
 
-import com.project.iotrest.access.annotation.Accessible;
+import com.project.iotrest.access.annotation.RequiredAccessType;
 import com.project.iotrest.exceptions.RESTException;
 import com.project.iotrest.pojos.access.Access;
 import com.project.iotrest.service.token.JWTProvider;
@@ -28,7 +28,7 @@ import static com.project.iotrest.exceptions.ErrorStatusCodes.UNAUTHORIZED;
  *
  * @author roshan
  */
-@Accessible
+@RequiredAccessType
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {

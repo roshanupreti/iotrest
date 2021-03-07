@@ -78,7 +78,6 @@ public class ParticleClient {
         if (Keys.HTTP_POST.getKey().equals(httpMethod)) {
             request.method(httpMethod, RequestBody.create(requestBody, MediaType.parse(mediaType)));
         }
-        //.method(httpMethod, RequestBody.create(requestBody, MediaType.parse(mediaType)));
         headerMap.forEach(request::addHeader);
         return request;
     }

@@ -1,7 +1,7 @@
 package com.project.iotrest.access.providers;
 
 
-import com.project.iotrest.access.annotation.Accessible;
+import com.project.iotrest.access.annotation.RequiredAccessType;
 import com.project.iotrest.exceptions.ErrorStatusCodes;
 import com.project.iotrest.exceptions.RESTException;
 import com.project.iotrest.pojos.access.Access;
@@ -21,7 +21,7 @@ import java.lang.reflect.Method;
  *
  * @author roshan
  */
-@Accessible
+@RequiredAccessType
 @Provider
 @Priority(Priorities.AUTHORIZATION)
 public class AuthorizationFilter implements ContainerRequestFilter {
@@ -58,11 +58,11 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         if (annotatedElement == null) {
             return new Access[0];
         } else {
-            Accessible accessible = annotatedElement.getAnnotation(Accessible.class);
-            if (accessible == null) {
+            RequiredAccessType requiredAccessType = annotatedElement.getAnnotation(RequiredAccessType.class);
+            if (requiredAccessType == null) {
                 return new Access[0];
             } else {
-                return accessible.value();
+                return requiredAccessType.value();
             }
         }
     }

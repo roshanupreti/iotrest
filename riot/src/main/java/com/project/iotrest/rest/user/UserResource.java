@@ -1,6 +1,6 @@
 package com.project.iotrest.rest.user;
 
-import com.project.iotrest.access.annotation.Accessible;
+import com.project.iotrest.access.annotation.RequiredAccessType;
 import com.project.iotrest.exceptions.ApplicationException;
 import com.project.iotrest.exceptions.RESTException;
 import com.project.iotrest.pojos.access.Access;
@@ -43,7 +43,7 @@ public class UserResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Accessible(Access.CREATE)
+    @RequiredAccessType(Access.CREATE)
     @ApiOperation(
             value = "Creates a new user.",
             response = User.class
@@ -76,7 +76,7 @@ public class UserResource {
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Accessible(Access.READ)
+    @RequiredAccessType(Access.READ)
     @ApiOperation(
             value = "Gets a user by id.",
             response = User.class
@@ -93,7 +93,7 @@ public class UserResource {
     @DELETE
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    @Accessible(Access.DELETE)
+    @RequiredAccessType(Access.DELETE)
     @ApiOperation(
             value = "Deletes a user by id.",
             response = Response.class
