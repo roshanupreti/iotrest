@@ -26,10 +26,10 @@ public class CredentialsValidator {
         if (loginCredentials == null) {
             message.append(BAD_CREDENTIALS_MSG);
         } else {
-            if (StringUtils.isEmpty(loginCredentials.getIdentifier())) {
+            if (StringUtils.isEmpty(loginCredentials.identifier())) {
                 message.append(NO_IDENTIFIER_MSG);
             }
-            if (StringUtils.isEmpty(loginCredentials.getPassword())) {
+            if (StringUtils.isEmpty(loginCredentials.password())) {
                 message.append(NO_PWD_MSG);
             }
         }

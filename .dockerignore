@@ -1,0 +1,10 @@
+target/
+riot/target/
+riot-jooq/target/
+.git/
+.idea/
+*.iml
+.DS_Store
+docs/
+thesis/
+*.md

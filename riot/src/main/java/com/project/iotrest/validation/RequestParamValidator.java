@@ -30,10 +30,10 @@ public class RequestParamValidator {
 
     public static void validatePost(User user) {
         StringBuilder message = new StringBuilder();
-        if (StringUtils.isEmpty(user.getUserName())) {
+        if (StringUtils.isEmpty(user.userName())) {
             message.append("Empty username");
         }
-        if (StringUtils.isEmpty(user.getEmail())) {
+        if (StringUtils.isEmpty(user.email())) {
             message.append("Empty email");
         }
         if (!StringUtils.isEmpty(message)) {

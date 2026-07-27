@@ -11,7 +11,6 @@
     </parent>
 
     <artifactId>riot-jooq</artifactId>
-    <version>1.0</version>
 
     <dependencies>
 
@@ -19,13 +18,13 @@
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq-codegen</artifactId>
-            <version>3.12.0</version>
+            <version>${jooq.version}</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.jooq/jooq-meta-extensions -->
         <dependency>
             <groupId>org.jooq</groupId>
             <artifactId>jooq-meta-extensions</artifactId>
-            <version>3.12.0</version>
+            <version>${jooq.version}</version>
         </dependency>
     </dependencies>
 
@@ -35,7 +34,7 @@
             <plugin>
                 <groupId>org.jooq</groupId>
                 <artifactId>jooq-codegen-maven</artifactId>
-                <version>3.12.0</version>
+                <version>${jooq.version}</version>
                 <!-- The plugin should hook into the generate goal -->
                 <executions>
                     <execution>

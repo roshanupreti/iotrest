@@ -12,7 +12,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -26,11 +25,14 @@ import javax.ws.rs.core.Response;
 
 @Path("users")
 @Api("users")
-@RequestScoped
 public class UserResource {
 
+    private final UserService userService;
+
     @Inject
-    private UserService userService;
+    public UserResource(UserService userService) {
+        this.userService = userService;
+    }
 
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Bad Request."),
@@ -56,22 +58,6 @@ public class UserResource {
             throw new RESTException(e.getStatusCode(), e.getResponseMessage());
         }
     }
-
-    /*@GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Accessible(Access.READ)
-    @ApiOperation(
-            value = "Gets a user by either username or e-mail.",
-            response = User.class
-    )
-    public User getUser(@QueryParam("nameOrEmail") String nameOrEmail) {
-        RequestParamValidator.validateString(nameOrEmail);
-        try {
-            return userService.getUserByUserNameOrEmail(nameOrEmail);
-        } catch (ApplicationException e) {
-            throw new RESTException(e.getStatusCode(), e.getResponseMessage());
-        }
-    }*/
 
     @GET
     @Path("{id}")

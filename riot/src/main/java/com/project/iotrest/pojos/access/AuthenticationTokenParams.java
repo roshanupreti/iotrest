@@ -8,48 +8,9 @@ import java.util.Set;
 /**
  *This class holds the parameters, based on which a JWT is issued.
  */
-public class AuthenticationTokenParams {
-
-    private final String id;
-    private final String username;
-    private final String email;
-    private final Set<Access> accessRights;
-    private final ZonedDateTime issuedDate;
-    private final ZonedDateTime expirationDate;
-
-    private AuthenticationTokenParams(String id, String username, String email, Set<Access> accessRights,
-                                      ZonedDateTime issuedDate, ZonedDateTime expirationDate) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.accessRights = accessRights;
-        this.issuedDate = issuedDate;
-        this.expirationDate = expirationDate;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Set<Access> getAccessRights() {
-        return accessRights;
-    }
-
-    public ZonedDateTime getIssuedDate() {
-        return issuedDate;
-    }
-
-    public ZonedDateTime getExpirationDate() {
-        return expirationDate;
-    }
+public record AuthenticationTokenParams(String id, String username, String email,
+                                        Set<Access> accessRights,
+                                        ZonedDateTime issuedDate, ZonedDateTime expirationDate) {
 
     public static class Builder {
 

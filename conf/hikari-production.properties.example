@@ -1,0 +1,43 @@
+# HikariCP Production Configuration Override
+# Copy this file to conf/hikari.properties in production environment
+# These settings are tuned for high-load production workloads
+
+# Connection Pool Sizing (PRODUCTION TUNING)
+# Formula: connections = ((core_count * 2) + effective_spindle_count)
+# For a 4-core server with SSD: (4 * 2) + 1 = 9-10 connections
+# Scale up for very high loads, but more != better
+hikari.maximumPoolSize=20
+hikari.minimumIdle=5
+
+# Connection Timeouts (in milliseconds)
+hikari.connectionTimeout=30000
+hikari.idleTimeout=600000
+hikari.maxLifetime=1800000
+
+# Pool Behavior
+hikari.autoCommit=true
+hikari.poolName=RiotHikariPool-Production
+
+# Performance Tuning - Prepared Statement Cache
+hikari.cachePrepStmts=true
+hikari.prepStmtCacheSize=500
+hikari.prepStmtCacheSqlLimit=2048
+
+# Connection Testing
+hikari.connectionTestQuery=SELECT 1
+
+# Leak Detection - DISABLED in production (has overhead)
+# Enable temporarily for debugging connection leaks
+hikari.leakDetectionThreshold=0
+
+# Metrics & Monitoring
+# Uncomment to enable JMX monitoring
+# hikari.registerMbeans=true
+
+# NOTES FOR PRODUCTION:
+# - Monitor actual connection usage with metrics
+# - Adjust maximumPoolSize based on actual load
+# - Watch for connection exhaustion warnings
+# - Each connection uses ~5MB memory
+# - H2 in-memory is not suitable for production - migrate to PostgreSQL/MySQL
+

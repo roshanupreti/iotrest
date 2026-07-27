@@ -1,9 +1,11 @@
 package com.project.iotrest.utilities;
 
 import com.project.iotrest.exceptions.ApplicationException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -14,6 +16,7 @@ import java.util.*;
  *
  * @author Roshan
  */
+@Slf4j
 public class Utilities {
 
     private static final String CONFIG_FOLDER;
@@ -38,8 +41,16 @@ public class Utilities {
     public static ResourceBundle getResourceBundleFromFile(String propFile) throws MalformedURLException {
         File file = FileUtils.getFile(CONFIG_FOLDER);
         URL[] urls = {file.toURI().toURL()};
-        ClassLoader loader = new URLClassLoader(urls);
-        return ResourceBundle.getBundle(propFile, Locale.getDefault(), loader);
+        URLClassLoader loader = new URLClassLoader(urls);
+        try {
+            return ResourceBundle.getBundle(propFile, Locale.getDefault(), loader);
+        } finally {
+            try {
+                loader.close();
+            } catch (IOException e) {
+                log.warn("Failed to close resource bundle classloader for {}", propFile, e);
+            }
+        }
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.project.iotrest.pojos.access;
 
 import com.project.iotrest.exceptions.RESTException;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import java.util.Optional;
  *
  * @author roshan
  */
+@Getter
 public enum Access {
 
     CREATE("create"),
@@ -21,10 +23,6 @@ public enum Access {
 
     Access(String level) {
         this.level = level;
-    }
-
-    public String getLevel() {
-        return level;
     }
 
     public static Access fromString(String text) {

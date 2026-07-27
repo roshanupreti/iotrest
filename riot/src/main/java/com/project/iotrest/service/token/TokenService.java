@@ -7,8 +7,8 @@ import com.project.iotrest.pojos.access.AuthenticationTokenParams;
 import com.project.iotrest.pojos.user.User;
 import com.project.iotrest.pojos.user.UserAccessRights;
 import org.apache.commons.lang3.BooleanUtils;
+import org.jvnet.hk2.annotations.Service;
 
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import java.time.ZonedDateTime;
 import java.util.Collections;
@@ -20,35 +20,38 @@ import java.util.Set;
  *
  * @author roshan
  */
-@Dependent
+@Service
 public class TokenService {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
+    private final JWTProvider jwtProvider;
+
     @Inject
-    private JWTProvider jwtProvider;
+    public TokenService(JWTProvider jwtProvider) {
+        this.jwtProvider = jwtProvider;
+    }
 
     /**
      * Generate JWT for the given user.
      *
-     * @param user          {@link User}
-     * @param particleToken
+     * @param user {@link User}
      * @return String
      */
-    public JsonNode generateToken(User user, final JsonNode particleToken) {
+    public JsonNode generateToken(User user) {
         ZonedDateTime iat = ZonedDateTime.now();
         Long EXPIRY_SECONDS = 900L;
         ZonedDateTime exp = iat.plusSeconds(EXPIRY_SECONDS);
         AuthenticationTokenParams authenticationTokenParams = new AuthenticationTokenParams.Builder()
-                .withId(user.getId().toString())
-                .withUsername(user.getUserName())
-                .withEmail(user.getEmail())
-                .withAccessRights(getAccessSet(user.getUserAccessRights()))
+                .withId(user.id().toString())
+                .withUsername(user.userName())
+                .withEmail(user.email())
+                .withAccessRights(getAccessSet(user.userAccessRights()))
                 .withIssuedDate(iat)
                 .withExpirationDate(exp)
                 .build();
         return mapper.valueToTree(Collections.singletonMap("access_token",
-                jwtProvider.issueJWT(authenticationTokenParams, particleToken.get("access_token").asText())));
+                jwtProvider.issueJWT(authenticationTokenParams)));
     }
 
     /**
@@ -60,16 +63,16 @@ public class TokenService {
     protected Set<Access> getAccessSet(UserAccessRights userAccessRights) {
         Set<Access> accessSet = new HashSet<>();
 
-        if (BooleanUtils.isTrue(userAccessRights.getCreate())) {
+        if (BooleanUtils.isTrue(userAccessRights.create())) {
             accessSet.add(Access.CREATE);
         }
-        if (BooleanUtils.isTrue(userAccessRights.getRead())) {
+        if (BooleanUtils.isTrue(userAccessRights.read())) {
             accessSet.add(Access.READ);
         }
-        if (BooleanUtils.isTrue(userAccessRights.getUpdate())) {
+        if (BooleanUtils.isTrue(userAccessRights.update())) {
             accessSet.add(Access.UPDATE);
         }
-        if (BooleanUtils.isTrue(userAccessRights.getDelete())) {
+        if (BooleanUtils.isTrue(userAccessRights.delete())) {
             accessSet.add(Access.DELETE);
         }
         return accessSet;

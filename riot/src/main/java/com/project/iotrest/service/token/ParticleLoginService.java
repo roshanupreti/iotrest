@@ -1,36 +1,33 @@
 package com.project.iotrest.service.token;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.project.iotrest.exceptions.ApplicationException;
-import com.project.iotrest.pojos.enums.Keys;
-import com.project.iotrest.service.particle.ParticleClient;
+import org.jvnet.hk2.annotations.Contract;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import java.net.MalformedURLException;
-import java.util.Collections;
-import java.util.stream.Collectors;
+/**
+ * Obtains and caches a Particle Cloud access token for this application's own (single,
+ * shared) Particle account. Kept as a separate contract from its implementation so tests can
+ * substitute a fake without making real Particle Cloud calls.
+ *
+ * @author roshan
+ */
+@Contract
+public interface ParticleLoginService {
 
-@Dependent
-public class ParticleLoginService extends ParticleClient {
+    /**
+     * Returns a currently-valid Particle Cloud access token, transparently refreshing it first
+     * if none is cached yet or the cached one has expired.
+     *
+     * @return a valid Particle Cloud access token
+     * @throws ApplicationException if a refresh was needed and the Particle Cloud login failed
+     */
+    String getAccessToken() throws ApplicationException;
 
-    @Inject
-    public ParticleLoginService() throws MalformedURLException {
-        super();
-    }
-
-    public JsonNode getParticleToken() throws ApplicationException {
-        return executeRequest(getApiBaseMap().get(Keys.PARTICLE_LOGIN_BASE.getKey()),
-                Keys.HTTP_POST.getKey(),
-                Keys.PARTICLE_LOGIN_MEDIA_TYPE.getKey(),
-                prepareRequestBodyString(),
-                Collections.singletonMap(Keys.CONTENT_TYPE.getKey(), Keys.PARTICLE_LOGIN_MEDIA_TYPE.getKey()));
-    }
-
-    private String prepareRequestBodyString() {
-        return getCredsMap()
-                .entrySet()
-                .stream().map(Object::toString)
-                .collect(Collectors.joining("&"));
-    }
+    /**
+     * Forces a fresh Particle Cloud login, caching and returning the new access token
+     * regardless of whether a still-valid one was already cached.
+     *
+     * @return the newly obtained Particle Cloud access token
+     * @throws ApplicationException if the Particle Cloud login failed
+     */
+    String refreshAccessToken() throws ApplicationException;
 }

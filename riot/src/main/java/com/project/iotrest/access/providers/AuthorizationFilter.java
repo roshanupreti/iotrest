@@ -40,11 +40,6 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         Method method = resourceInfo.getResourceMethod();
         Access[] accessMethod = extractPermissionLevel(method);
 
-
-        // How to modify the securityContext at the time of validating the token, so we can get The user login, to verify if it has the required permission level for this endpoint
-        //String login = requestContext.getSecurityContext().getUserPrincipal().getName();
-        //User user = (User) requestContext.getSecurityContext().getUserPrincipal();
-
         //  Checks if the user has permission to execute this method. The access levels of the method overlapping the class
         if (accessMethod.length == 0) {
             checkPermission(accesses, requestContext);
@@ -53,7 +48,7 @@ public class AuthorizationFilter implements ContainerRequestFilter {
         }
     }
 
-    // Method that extracts the permission levels that have been set in @Accesslevel
+    // Method that extracts the permission levels that have been set in @RequiredAccessType
     private Access[] extractPermissionLevel(AnnotatedElement annotatedElement) {
         if (annotatedElement == null) {
             return new Access[0];

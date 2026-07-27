@@ -1,0 +1,29 @@
+services:
+  mariadb:
+    image: mariadb:11.4
+    environment:
+      MARIADB_ROOT_PASSWORD: demo
+      MARIADB_DATABASE: demo
+      MARIADB_USER: demo
+      MARIADB_PASSWORD: demo
+    volumes:
+      # MariaDB's entrypoint runs these against MARIADB_DATABASE, in filename order, on first
+      # startup only — same seed files `riot`'s DAOs are generated against, so schema/data stay
+      # in sync via the existing riot-jooq codegen input rather than a second copy.
+      - ./riot/src/main/resources/sql/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./riot/src/main/resources/sql/data.sql:/docker-entrypoint-initdb.d/02-data.sql:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  riot:
+    build: .
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    ports:
+      - "8443:8443"   # HTTPS: API (/riot/*), Swagger UI (/riot/docs), login UI (/riot)
+    volumes:
+      - ./conf:/app/conf:ro

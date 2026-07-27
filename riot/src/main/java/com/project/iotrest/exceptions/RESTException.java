@@ -2,6 +2,7 @@ package com.project.iotrest.exceptions;
 
 
 import com.project.iotrest.exceptions.wrapper.ErrorWrapper;
+import lombok.Getter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
@@ -24,12 +25,15 @@ public class RESTException extends RuntimeException implements ExceptionMapper<R
 
     private static final long serialVersionUID = 1L;
 
-    private Integer statusCode;
+    @Getter
+    private final Integer statusCode;
 
-    private String responseMessage;
+    @Getter
+    private final String responseMessage;
 
     public RESTException() {
         /*Absence of an empty constructor will lead to the failure of instance creation during the runtime.*/
+        this(null, null);
     }
 
     public RESTException(Integer statusCode, String responseMessage) {
@@ -44,14 +48,6 @@ public class RESTException extends RuntimeException implements ExceptionMapper<R
     @Context
     private transient HttpServletRequest request;
 
-    public Integer getStatusCode() {
-        return this.statusCode;
-    }
-
-    public String getResponseMessage() {
-        return this.responseMessage;
-    }
-
     /**
      * Whenever {@link RESTException} is thrown, the server returns a response, with ErrorWrapper as the entity that's
      * created based on the exception parameters.
@@ -59,12 +55,12 @@ public class RESTException extends RuntimeException implements ExceptionMapper<R
     @Override
     public Response toResponse(RESTException exception) {
         Status status = Status.fromStatusCode(exception.getStatusCode());
-        ErrorWrapper errorWrapper = new ErrorWrapper();
-        errorWrapper.setCode(status.getStatusCode());
-        errorWrapper.setStatus(status.getReasonPhrase());
-        errorWrapper.setReason(exception.getResponseMessage());
-        errorWrapper.setAction(request.getMethod());
-        errorWrapper.setApiPath(format("%s%s", request.getServletPath(), request.getPathInfo()));
+        ErrorWrapper errorWrapper = new ErrorWrapper(
+                status.getStatusCode(),
+                status.getReasonPhrase(),
+                exception.getResponseMessage(),
+                request.getMethod(),
+                format("%s%s", request.getServletPath(), request.getPathInfo()));
         return Response.status(status).entity(errorWrapper).type(MediaType.APPLICATION_JSON).build();
     }
 }

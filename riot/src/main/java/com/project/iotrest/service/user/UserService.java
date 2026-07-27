@@ -1,15 +1,15 @@
 package com.project.iotrest.service.user;
 
 
-import com.project.iotrest.dao.user.UserDao;
+import com.project.iotrest.dao.UserDao;
 import com.project.iotrest.exceptions.ApplicationException;
 import com.project.iotrest.pojos.access.LoginCredentials;
 import com.project.iotrest.pojos.user.User;
 import com.project.iotrest.rest.user.UserResource;
 import com.project.iotrest.validation.CredentialsValidator;
+import org.jvnet.hk2.annotations.Service;
 import org.mindrot.jbcrypt.BCrypt;
 
-import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import static com.project.iotrest.exceptions.ErrorStatusCodes.BAD_REQUEST;
@@ -19,20 +19,24 @@ import static com.project.iotrest.exceptions.ErrorStatusCodes.BAD_REQUEST;
  *
  * @author roshan
  */
-@Dependent
+@Service
 public class UserService {
 
+    private final UserDao userDao;
+
     @Inject
-    private UserDao userDao;
+    public UserService(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     public User createUser(User user) throws ApplicationException {
         /* Check if the user already exists. */
-        if (userExists(user.getUserName())
-                || userExists(user.getEmail())) {
+        if (userExists(user.userName())
+                || userExists(user.email())) {
             throw new ApplicationException(BAD_REQUEST.getCode(), "User already exists.");
         }
         /* Hash password before creating user. */
-        user.setPassword(CredentialsValidator.hashPassword(user.getPassword()));
+        user = user.withPassword(CredentialsValidator.hashPassword(user.password()));
         return userDao.createUser(user);
     }
 
@@ -41,8 +45,8 @@ public class UserService {
     }
 
     public User attemptUserLogin(LoginCredentials loginCredentials) throws ApplicationException {
-        User user = userDao.getUserByUserNameOrEmail(loginCredentials.getIdentifier());
-        if (BCrypt.checkpw(loginCredentials.getPassword(), user.getPassword())) {
+        User user = userDao.getUserByUserNameOrEmail(loginCredentials.identifier());
+        if (BCrypt.checkpw(loginCredentials.password(), user.password())) {
             return user;
         }
         throw new ApplicationException(BAD_REQUEST.getCode(), "Incorrect Password.");

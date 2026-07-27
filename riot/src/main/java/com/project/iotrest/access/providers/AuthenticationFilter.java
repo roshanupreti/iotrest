@@ -3,6 +3,7 @@ package com.project.iotrest.access.providers;
 import com.project.iotrest.access.annotation.RequiredAccessType;
 import com.project.iotrest.exceptions.RESTException;
 import com.project.iotrest.pojos.access.Access;
+import com.project.iotrest.security.JWTUserPrincipal;
 import com.project.iotrest.service.token.JWTProvider;
 import io.jsonwebtoken.Claims;
 
@@ -33,8 +34,12 @@ import static com.project.iotrest.exceptions.ErrorStatusCodes.UNAUTHORIZED;
 @Priority(Priorities.AUTHENTICATION)
 public class AuthenticationFilter implements ContainerRequestFilter {
 
+    private final JWTProvider jwtProvider;
+
     @Inject
-    private JWTProvider jwtProvider;
+    public AuthenticationFilter(JWTProvider jwtProvider) {
+        this.jwtProvider = jwtProvider;
+    }
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
@@ -48,32 +53,39 @@ public class AuthenticationFilter implements ContainerRequestFilter {
         if (claims == null) {
             throw new RESTException(UNAUTHORIZED.getCode(), "Invalid token");
         }
-        Object accessRights = claims.getOrDefault("access-levels", ArrayList.class);
-        final String particleToken = String.valueOf(claims.getOrDefault("particle-token", String.class));
+        Object accessRights = claims.getOrDefault("access-levels", new ArrayList<>());
         List<String> accessList = null;
         if (accessRights instanceof List) {
             accessList = (List<String>) accessRights;
         }
-        modifyRequestContext(requestContext, claims.getSubject(), getAccessRightsSet(accessList));
-        requestContext.setProperty("particle-access-token", particleToken);
+
+        Set<Access> accessRightsSet = getAccessRightsSet(accessList);
+
+        String username = claims.getSubject();
+        Integer userId = claims.get("id", Integer.class);
+        String email = claims.get("email", String.class);
+
+        JWTUserPrincipal principal = new JWTUserPrincipal(userId, username, email, accessRightsSet);
+
+        modifyRequestContext(requestContext, principal, accessRightsSet);
     }
 
     /**
      * Modify {@link ContainerRequestContext} based on the user login.
      *
      * @param requestContext {@link ContainerRequestContext}
-     * @param user           String
-     * @param accessRights   String
+     * @param principal      Principal for the authenticated user
+     * @param accessRights   Set of access rights
      */
     private void modifyRequestContext(ContainerRequestContext requestContext,
-                                      final String user,
+                                      final Principal principal,
                                       Set<Access> accessRights) {
         final SecurityContext currentSecurityContext = requestContext.getSecurityContext();
         requestContext.setSecurityContext(new SecurityContext() {
 
             @Override
             public Principal getUserPrincipal() {
-                return () -> user;
+                return principal;
             }
 
             @Override

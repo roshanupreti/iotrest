@@ -2,10 +2,12 @@ package com.project.iotrest.service.token;
 
 import com.project.iotrest.exceptions.RESTException;
 import com.project.iotrest.pojos.access.AuthenticationTokenParams;
+import com.project.iotrest.utilities.Utilities;
 import io.jsonwebtoken.*;
 import org.apache.commons.lang3.StringUtils;
+import org.jvnet.hk2.annotations.Service;
 
-import javax.enterprise.context.Dependent;
+import java.net.MalformedURLException;
 
 import static com.project.iotrest.exceptions.ErrorStatusCodes.UNAUTHORIZED;
 import static java.util.Date.from;
@@ -15,11 +17,18 @@ import static java.util.Date.from;
  *
  * @author roshan
  */
-@Dependent
+@Service
 public class JWTProvider {
 
-    /* secret key to sign the JWT with. */
-    private static final String SECRET = "$2a$10$32Hw5zY7uvx0EgsfE/yQNuuL.Nrt5srepNP.vlmES2VKbYAnOBqC6";
+    private static final String JWT_CONFIG_FILE = "jwt/jwt";
+    private static final String JWT_SECRET_KEY = "secret";
+
+    /* secret key to sign the JWT with, loaded from a gitignored config file (conf/jwt/jwt.properties). */
+    private final String secret;
+
+    public JWTProvider() throws MalformedURLException {
+        this.secret = Utilities.getResourceBundleFromFile(JWT_CONFIG_FILE).getString(JWT_SECRET_KEY);
+    }
 
     /**
      * Issue and return a JWT string.
@@ -27,17 +36,17 @@ public class JWTProvider {
      * @param authenticationTokenParams {@link AuthenticationTokenParams}
      * @return String
      */
-    public String issueJWT(AuthenticationTokenParams authenticationTokenParams, final String particleToken) {
+    public String issueJWT(AuthenticationTokenParams authenticationTokenParams) {
         return Jwts.builder()
-                .setId(authenticationTokenParams.getId())
+                .setId(authenticationTokenParams.id())
                 .setIssuer("iotrest")
-                .setSubject(authenticationTokenParams.getUsername())
-                .setIssuedAt(from(authenticationTokenParams.getIssuedDate().toInstant()))
-                .setExpiration(from(authenticationTokenParams.getExpirationDate().toInstant()))
-                .claim("email", authenticationTokenParams.getEmail())
-                .claim("access-levels", authenticationTokenParams.getAccessRights())
-                .claim("particle-token", particleToken)
-                .signWith(SignatureAlgorithm.HS256, SECRET)
+                .setSubject(authenticationTokenParams.username())
+                .setIssuedAt(from(authenticationTokenParams.issuedDate().toInstant()))
+                .setExpiration(from(authenticationTokenParams.expirationDate().toInstant()))
+                .claim("id", Integer.valueOf(authenticationTokenParams.id()))
+                .claim("email", authenticationTokenParams.email())
+                .claim("access-levels", authenticationTokenParams.accessRights())
+                .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
@@ -53,7 +62,7 @@ public class JWTProvider {
         }
         try {
             return Jwts.parser()
-                    .setSigningKey(SECRET)
+                    .setSigningKey(secret)
                     .parseClaimsJws(token)
                     .getBody();
         } catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException | SignatureException e) {

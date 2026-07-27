@@ -4,7 +4,6 @@ import com.project.iotrest.exceptions.ApplicationException;
 import com.project.iotrest.exceptions.RESTException;
 import com.project.iotrest.pojos.access.LoginCredentials;
 import com.project.iotrest.pojos.user.User;
-import com.project.iotrest.service.token.ParticleLoginService;
 import com.project.iotrest.service.token.TokenService;
 import com.project.iotrest.service.user.UserService;
 import com.project.iotrest.validation.CredentialsValidator;
@@ -13,7 +12,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -28,17 +26,16 @@ import javax.ws.rs.core.Response;
  */
 @Path("auth")
 @Api("auth")
-@RequestScoped
 public class AuthenticationResource {
 
-    @Inject
-    private UserService userService;
+    private final UserService userService;
+    private final TokenService tokenService;
 
     @Inject
-    private TokenService tokenService;
-
-    @Inject
-    private ParticleLoginService particleLoginService;
+    public AuthenticationResource(UserService userService, TokenService tokenService) {
+        this.userService = userService;
+        this.tokenService = tokenService;
+    }
 
     @ApiResponses(value = {
             @ApiResponse(code = 400, message = "Bad Request."),
@@ -60,23 +57,11 @@ public class AuthenticationResource {
         try {
             CredentialsValidator.validateLoginCredentials(loginCredentials);
             User user = userService.attemptUserLogin(loginCredentials);
-            return Response.ok(tokenService.generateToken(user, particleLoginService.getParticleToken()))
-                    .build();
+            return Response.ok(tokenService.generateToken(user)).build();
         } catch (ApplicationException e) {
             throw new RESTException(e.getStatusCode(), e.getResponseMessage());
         }
     }
-
-    /*@GET
-    @Path("tokentest")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getToken() {
-        try {
-            return Response.ok(ParticleClient.getToken()).build();
-        } catch (ApplicationException e) {
-            throw new RESTException(e.getStatusCode(), e.getResponseMessage());
-        }
-    }*/
 
     //todo: implement an endpoint that revokes the JWT.
 }
