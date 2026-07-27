@@ -13,18 +13,3 @@ conf/jetty/keystore.p12
 
 # OS cruft
 .DS_Store
-
-# LaTeX build byproducts (thesis/main.tex sources stay tracked; these regenerate via `make build`)
-thesis/main.aux
-thesis/main.bbl
-thesis/main.bcf
-thesis/main.bcf-SAVE-ERROR
-thesis/main.blg
-thesis/main.fdb_latexmk
-thesis/main.fls
-thesis/main.log
-thesis/main.out
-thesis/main.pdf
-thesis/main.run.xml
-thesis/main.toc
-
